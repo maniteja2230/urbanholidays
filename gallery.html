@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery | Urban Holidays — Ballari</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .gallery-filter { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:40px; }
+    .gf-btn {
+      padding:10px 22px; font-size:11px; font-weight:600; letter-spacing:2px;
+      text-transform:uppercase; cursor:pointer; background:transparent;
+      border:1.5px solid rgba(0,0,0,0.12); color:var(--text-3); transition:all 0.25s;
+    }
+    .gf-btn.active { background:var(--gold); border-color:var(--gold); color:var(--navy); }
+    .gf-btn:hover:not(.active) { border-color:var(--navy); color:var(--navy); }
+    .masonry-grid {
+      columns:3 300px; column-gap:12px;
+    }
+    .gallery-item {
+      break-inside:avoid; margin-bottom:12px;
+      position:relative; overflow:hidden; cursor:pointer;
+    }
+    .gallery-item img {
+      width:100%; display:block;
+      transition:transform 0.5s ease;
+    }
+    .gallery-item:hover img { transform:scale(1.06); }
+    .gallery-item .overlay {
+      position:absolute; inset:0; background:linear-gradient(to top,rgba(13,27,42,0.7) 0%,transparent 50%);
+      opacity:0; transition:opacity 0.3s; display:flex; align-items:flex-end; padding:16px;
+    }
+    .gallery-item:hover .overlay { opacity:1; }
+    .overlay-label { font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--white); }
+
+    /* LIGHTBOX */
+    .lightbox {
+      position:fixed; inset:0; background:rgba(0,0,0,0.92);
+      display:flex; align-items:center; justify-content:center;
+      z-index:9999; opacity:0; visibility:hidden; transition:all 0.3s;
+    }
+    .lightbox.open { opacity:1; visibility:visible; }
+    .lightbox-img { max-width:90vw; max-height:85vh; object-fit:contain; }
+    .lightbox-close {
+      position:absolute; top:24px; right:32px;
+      font-size:28px; color:var(--white); cursor:pointer; opacity:0.7;
+      transition:opacity 0.2s; background:none; border:none;
+    }
+    .lightbox-close:hover { opacity:1; }
+    .lightbox-prev, .lightbox-next {
+      position:absolute; top:50%; transform:translateY(-50%);
+      font-size:32px; color:var(--white); cursor:pointer; opacity:0.6;
+      background:none; border:none; transition:opacity 0.2s; padding:8px 16px;
+    }
+    .lightbox-prev:hover, .lightbox-next:hover { opacity:1; }
+    .lightbox-prev { left:20px; }
+    .lightbox-next { right:20px; }
+    .lightbox-caption {
+      position:absolute; bottom:24px; left:50%; transform:translateX(-50%);
+      font-size:12px; letter-spacing:2px; text-transform:uppercase;
+      color:rgba(255,255,255,0.6);
+    }
+    @media(max-width:768px) { .masonry-grid { columns:2 200px; } }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar"></nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1600&q=70')"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-eyebrow">✦ Our World in Pictures</div>
+    <h1>Travel <em>Gallery</em></h1>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Gallery</span></div>
+  </div>
+</div>
+
+<section>
+  <!-- FILTER -->
+  <div class="gallery-filter reveal">
+    <button class="gf-btn active" onclick="filterGallery(this,'all')">🌍 All</button>
+    <button class="gf-btn" onclick="filterGallery(this,'domestic')">🇮🇳 Domestic</button>
+    <button class="gf-btn" onclick="filterGallery(this,'international')">✈️ International</button>
+    <button class="gf-btn" onclick="filterGallery(this,'honeymoon')">💑 Honeymoon</button>
+    <button class="gf-btn" onclick="filterGallery(this,'nature')">🌿 Nature</button>
+  </div>
+
+  <!-- MASONRY GRID -->
+  <div class="masonry-grid reveal" id="galleryGrid">
+    <!-- Items injected by JS -->
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" onclick="closeLightbox()">✕</button>
+  <button class="lightbox-prev" onclick="lightboxPrev()">‹</button>
+  <img class="lightbox-img" id="lightboxImg" src="" alt=""/>
+  <button class="lightbox-next" onclick="lightboxNext()">›</button>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer"></footer>
+<a href="https://wa.me/91XXXXXXXXXX" target="_blank" class="whatsapp-float">💬</a>
+
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+injectNav(true);
+injectFooter();
+
+const galleryData = [
+  {src:'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80',label:'Goa Beaches',cat:'domestic'},
+  {src:'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80',label:'Dubai Skyline',cat:'international'},
+  {src:'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80',label:'Swiss Alps',cat:'honeymoon'},
+  {src:'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&q=80',label:'Himalayan Peaks',cat:'nature'},
+  {src:'https://images.unsplash.com/photo-1588416936097-41850ab3d86d?w=600&q=80',label:'Kerala Backwaters',cat:'domestic'},
+  {src:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80',label:'Bali Temple',cat:'international'},
+  {src:'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=600&q=80',label:'Taj Mahal',cat:'domestic'},
+  {src:'https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=600&q=80',label:'Maldives',cat:'honeymoon'},
+  {src:'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=600&q=80',label:'Beach Bliss',cat:'honeymoon'},
+  {src:'https://images.unsplash.com/photo-1609766856923-7cf9b9c5d0a4?w=600&q=80',label:'Manali Snow',cat:'domestic'},
+  {src:'https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80',label:'Thailand Temples',cat:'international'},
+  {src:'https://images.unsplash.com/photo-1524230657132-9d40fc8b3015?w=600&q=80',label:'Rajasthan Forts',cat:'domestic'},
+  {src:'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&q=80',label:'Golden Sunset',cat:'nature'},
+  {src:'https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=80',label:'Vietnam Bay',cat:'international'},
+  {src:'https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=600&q=80',label:'Singapore City',cat:'international'},
+  {src:'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&q=80',label:'Mountain Road',cat:'nature'},
+  {src:'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&q=80',label:'Kashmir',cat:'honeymoon'},
+  {src:'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=600&q=80',label:'Aerial View',cat:'nature'},
+];
+
+let currentIndex = 0;
+let filtered = [...galleryData];
+
+function renderGallery(items) {
+  const grid = document.getElementById('galleryGrid');
+  grid.innerHTML = '';
+  filtered = items;
+  items.forEach((img, i) => {
+    const div = document.createElement('div');
+    div.className = 'gallery-item';
+    div.innerHTML = `<img src="${img.src}" alt="${img.label}" loading="lazy"/>
+      <div class="overlay"><span class="overlay-label">${img.label}</span></div>`;
+    div.onclick = () => openLightbox(i);
+    grid.appendChild(div);
+  });
+}
+
+function filterGallery(btn, cat) {
+  document.querySelectorAll('.gf-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const items = cat==='all' ? galleryData : galleryData.filter(g=>g.cat===cat);
+  renderGallery(items);
+}
+
+function openLightbox(i) {
+  currentIndex = i;
+  const lb = document.getElementById('lightbox');
+  document.getElementById('lightboxImg').src = filtered[i].src.replace('w=600','w=1200');
+  document.getElementById('lightboxCaption').textContent = filtered[i].label;
+  lb.classList.add('open');
+}
+function closeLightbox() { document.getElementById('lightbox').classList.remove('open'); }
+function lightboxPrev() { openLightbox((currentIndex - 1 + filtered.length) % filtered.length); }
+function lightboxNext() { openLightbox((currentIndex + 1) % filtered.length); }
+
+document.addEventListener('keydown', e => {
+  if(e.key==='Escape') closeLightbox();
+  if(e.key==='ArrowLeft') lightboxPrev();
+  if(e.key==='ArrowRight') lightboxNext();
+});
+
+renderGallery(galleryData);
+</script>
+</body>
+</html>

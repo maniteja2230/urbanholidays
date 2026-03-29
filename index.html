@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Urban Holidays | Where Memories Begin — Ballari</title>
+  <meta name="description" content="Urban Holidays, Ballari — Crafting extraordinary domestic & international travel experiences. Book your dream holiday today."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    /* HOME-SPECIFIC STYLES */
+    @keyframes fadeUp { from{opacity:0;transform:translateY(28px)} to{opacity:1;transform:none} }
+
+    /* HERO */
+    .hero { position:relative; height:100vh; overflow:hidden; background:var(--navy); }
+    .hero-slide {
+      position:absolute; inset:0; background-size:cover; background-position:center;
+      opacity:0; transition:opacity 1.4s ease;
+      animation:kenBurns 8s ease-in-out forwards;
+    }
+    .hero-slide.active { opacity:1; }
+    @keyframes kenBurns { 0%{transform:scale(1.07)} 100%{transform:scale(1)} }
+    .hero-slide::after {
+      content:''; position:absolute; inset:0;
+      background:linear-gradient(135deg,rgba(13,27,42,0.76) 0%,rgba(13,27,42,0.2) 55%,rgba(13,27,42,0.45) 100%);
+    }
+    .slide-1{background-image:url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1800&q=80')}
+    .slide-2{background-image:url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=1800&q=80')}
+    .slide-3{background-image:url('https://images.unsplash.com/photo-1587974928442-77dc3e0dba72?w=1800&q=80')}
+    .slide-4{background-image:url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1800&q=80')}
+    .hero-content { position:relative; z-index:2; height:100%; display:flex; align-items:center; padding:0 64px; }
+    .hero-text { max-width:680px; }
+    .hero-eyebrow {
+      display:inline-flex; align-items:center; gap:10px;
+      font-size:10px; font-weight:600; letter-spacing:5px; text-transform:uppercase;
+      color:var(--gold); background:rgba(201,168,76,0.12); border:1px solid rgba(201,168,76,0.3);
+      padding:6px 18px; margin-bottom:28px;
+      opacity:0; animation:fadeUp 0.8s 0.4s forwards;
+    }
+    .hero-title {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(54px,7.5vw,100px); font-weight:900; line-height:0.95;
+      color:var(--white); margin-bottom:12px;
+      opacity:0; animation:fadeUp 0.9s 0.6s forwards;
+    }
+    .hero-title em { font-style:italic; color:var(--gold-light); }
+    .hero-subtitle {
+      font-family:'Cormorant Garamond',serif;
+      font-size:clamp(18px,2.4vw,30px); font-style:italic; font-weight:300;
+      color:rgba(255,255,255,0.8); margin-bottom:44px;
+      opacity:0; animation:fadeUp 0.9s 0.8s forwards;
+    }
+    .hero-btns { display:flex; gap:16px; flex-wrap:wrap; opacity:0; animation:fadeUp 0.9s 1.0s forwards; }
+    .hero-dots {
+      position:absolute; bottom:36px; left:50%; transform:translateX(-50%);
+      display:flex; gap:10px; z-index:3;
+    }
+    .hero-dot {
+      width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.35);
+      cursor:pointer; transition:all 0.3s;
+    }
+    .hero-dot.active { background:var(--gold); width:24px; border-radius:3px; }
+    .hero-scroll {
+      position:absolute; bottom:36px; right:64px; z-index:3;
+      display:flex; flex-direction:column; align-items:center; gap:8px;
+      font-size:9px; letter-spacing:4px; text-transform:uppercase; color:rgba(255,255,255,0.45);
+    }
+    .hero-scroll::after {
+      content:''; width:1px; height:52px; background:rgba(255,255,255,0.25);
+      animation:scrollLine 1.6s ease-in-out infinite;
+    }
+    @keyframes scrollLine { 0%,100%{opacity:0.3;transform:scaleY(1)} 50%{opacity:1;transform:scaleY(0.6)} }
+
+    /* SEARCH BAR */
+    .search-bar {
+      position:relative; z-index:100; margin-top:-52px;
+      padding:0 64px;
+    }
+    .search-inner {
+      background:var(--white); padding:32px 40px;
+      display:grid; grid-template-columns:1fr 1fr 1fr 1fr auto;
+      gap:20px; align-items:end;
+      box-shadow:0 24px 80px rgba(13,27,42,0.12);
+      border-top:3px solid var(--gold);
+    }
+    .search-field label {
+      display:block; font-size:9px; font-weight:700; letter-spacing:3px;
+      text-transform:uppercase; color:var(--text-3); margin-bottom:8px;
+    }
+    .search-field select,
+    .search-field input {
+      width:100%; border:none; border-bottom:1.5px solid rgba(0,0,0,0.1);
+      background:transparent; padding:8px 0; font-size:15px;
+      font-family:'DM Sans',sans-serif; color:var(--text); outline:none;
+      transition:border-color 0.2s;
+    }
+    .search-field select:focus,
+    .search-field input:focus { border-bottom-color:var(--gold); }
+
+    /* STATS */
+    .stats-section {
+      background:var(--navy); padding:60px 64px;
+      display:grid; grid-template-columns:repeat(4,1fr); gap:0;
+    }
+    .stat-item {
+      text-align:center; padding:20px;
+      border-right:1px solid rgba(201,168,76,0.1);
+    }
+    .stat-item:last-child { border-right:none; }
+    .stat-num {
+      font-family:'Playfair Display',serif;
+      font-size:clamp(36px,4vw,56px); font-weight:900; color:var(--gold);
+      line-height:1;
+    }
+    .stat-num sup { font-size:0.5em; vertical-align:super; }
+    .stat-label { font-size:11px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.45); margin-top:8px; }
+
+    /* ABOUT STRIP */
+    .about-strip { display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:center; }
+    .about-img-wrap { position:relative; }
+    .about-main-img {
+      width:100%; height:520px; object-fit:cover;
+    }
+    .about-accent-img {
+      position:absolute; bottom:-32px; right:-32px;
+      width:52%; height:280px; object-fit:cover;
+      border:6px solid var(--white);
+    }
+    .about-badge {
+      position:absolute; top:40px; left:-24px;
+      background:var(--gold); color:var(--navy);
+      padding:16px 20px; text-align:center;
+      font-family:'Playfair Display',serif;
+    }
+    .about-badge strong { display:block; font-size:32px; font-weight:900; line-height:1; }
+    .about-badge span { font-size:9px; letter-spacing:2px; text-transform:uppercase; }
+    .about-features { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:28px; }
+    .about-feature {
+      display:flex; align-items:center; gap:10px;
+      font-size:13px; font-weight:500; color:var(--text-2);
+    }
+    .about-feature::before { content:'✦'; color:var(--gold); font-size:10px; }
+
+    /* PACKAGES */
+    .packages-section { background:var(--cream); }
+    .tab-row { display:flex; gap:4px; margin-bottom:48px; }
+    .tab-btn {
+      padding:11px 28px; font-size:11px; font-weight:600;
+      letter-spacing:2px; text-transform:uppercase; cursor:pointer;
+      background:transparent; border:1.5px solid rgba(0,0,0,0.12);
+      color:var(--text-3); transition:all 0.25s;
+    }
+    .tab-btn.active { background:var(--gold); border-color:var(--gold); color:var(--navy); }
+    .tour-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+    .tour-grid[style*="none"] { display:none !important; }
+
+    /* FEATURES */
+    .features-section { background:var(--navy); }
+    .features-section .section-title { color:var(--white); }
+    .features-section .section-sub { color:rgba(255,255,255,0.55); }
+    .features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:56px; }
+    .feature-item {
+      background:rgba(255,255,255,0.03); padding:40px 32px;
+      border:1px solid rgba(201,168,76,0.08);
+      transition:background 0.3s,border-color 0.3s;
+    }
+    .feature-item:hover { background:rgba(201,168,76,0.05); border-color:rgba(201,168,76,0.2); }
+    .feature-icon { font-size:32px; margin-bottom:16px; }
+    .feature-title { font-family:'Playfair Display',serif; font-size:18px; font-weight:700; color:var(--white); margin-bottom:10px; }
+    .feature-desc { font-size:13px; color:rgba(255,255,255,0.45); line-height:1.7; }
+
+    /* TESTIMONIALS */
+    .testi-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; margin-top:56px; }
+    .testi-card {
+      background:var(--white); padding:32px; border:1px solid var(--border);
+      position:relative; transition:box-shadow 0.3s;
+    }
+    .testi-card:hover { box-shadow:var(--shadow); }
+    .testi-card::before { content:'❝'; position:absolute; top:20px; right:24px; font-size:48px; color:var(--gold-pale); font-family:serif; line-height:1; }
+    .testi-stars { color:var(--gold); font-size:13px; margin-bottom:16px; letter-spacing:2px; }
+    .testi-text { font-size:14px; color:var(--text-2); line-height:1.75; font-style:italic; margin-bottom:24px; }
+    .testi-author { display:flex; align-items:center; gap:12px; }
+    .testi-avatar { width:46px; height:46px; border-radius:50%; object-fit:cover; border:2px solid var(--gold-pale); }
+    .testi-name { font-weight:600; font-size:14px; color:var(--navy); }
+    .testi-role { font-size:11px; color:var(--text-3); letter-spacing:1px; }
+
+    /* INSTAGRAM */
+    .insta-section { background:var(--gold-pale); text-align:center; }
+    .insta-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:40px; }
+    .insta-cell {
+      aspect-ratio:1; overflow:hidden; position:relative;
+      background:var(--cream); cursor:pointer;
+    }
+    .insta-cell img { width:100%; height:100%; object-fit:cover; transition:transform 0.5s; }
+    .insta-cell:hover img { transform:scale(1.08); }
+    .insta-btn {
+      display:inline-flex; align-items:center; gap:10px;
+      margin-top:32px; padding:14px 36px;
+      background:var(--navy); color:var(--white);
+      font-size:12px; font-weight:600; letter-spacing:2px; text-transform:uppercase;
+      text-decoration:none; transition:all 0.3s;
+    }
+    .insta-btn:hover { background:var(--gold); color:var(--navy); }
+
+    /* CONTACT CTA */
+    .cta-section {
+      background:var(--navy); text-align:center;
+      background-image:url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=1600&q=60');
+      background-size:cover; background-position:center;
+      background-blend-mode:overlay;
+    }
+    .cta-section .section-title { color:var(--white); }
+    .cta-section .section-sub { color:rgba(255,255,255,0.7); margin:0 auto 36px; text-align:center; }
+    .cta-btns { display:flex; gap:16px; justify-content:center; flex-wrap:wrap; }
+
+    @media(max-width:1024px) {
+      .search-inner { grid-template-columns:1fr 1fr 1fr; }
+      .stats-section { grid-template-columns:repeat(2,1fr); }
+      .about-strip { grid-template-columns:1fr; gap:48px; }
+      .tour-grid { grid-template-columns:repeat(2,1fr); }
+      .features-grid { grid-template-columns:repeat(2,1fr); }
+      .testi-grid { grid-template-columns:1fr 1fr; }
+    }
+    @media(max-width:768px) {
+      .hero-content { padding:0 24px; }
+      .search-bar { padding:0 20px; }
+      .search-inner { grid-template-columns:1fr; padding:24px; margin-top:-20px; }
+      .stats-section { padding:40px 20px; grid-template-columns:1fr 1fr; }
+      .tour-grid { grid-template-columns:1fr; }
+      .features-grid { grid-template-columns:1fr; }
+      .testi-grid { grid-template-columns:1fr; }
+      .insta-grid { grid-template-columns:repeat(2,1fr); }
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAVBAR -->
+<nav id="navbar"><!-- injected by components.js --></nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-slide slide-1 active"></div>
+  <div class="hero-slide slide-2"></div>
+  <div class="hero-slide slide-3"></div>
+  <div class="hero-slide slide-4"></div>
+
+  <div class="hero-content">
+    <div class="hero-text">
+      <div class="hero-eyebrow">✦ &nbsp; Ballari's Finest Travel House &nbsp; ✦</div>
+      <h1 class="hero-title">Journey<br>Beyond the<br><em>Ordinary</em></h1>
+      <p class="hero-subtitle">Crafting extraordinary memories, one destination at a time.</p>
+      <div class="hero-btns">
+        <a href="tours.html" class="btn-primary">Explore Tours</a>
+        <a href="contact.html" class="btn-outline">Get a Quote</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-dots">
+    <div class="hero-dot active" onclick="goToSlide(0)"></div>
+    <div class="hero-dot" onclick="goToSlide(1)"></div>
+    <div class="hero-dot" onclick="goToSlide(2)"></div>
+    <div class="hero-dot" onclick="goToSlide(3)"></div>
+  </div>
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- SEARCH BAR -->
+<div class="search-bar">
+  <div class="search-inner">
+    <div class="search-field">
+      <label>Destination</label>
+      <select>
+        <option>Any Destination</option>
+        <option>Goa</option><option>Kerala</option><option>Manali</option>
+        <option>Rajasthan</option><option>Leh Ladakh</option>
+        <option>Dubai</option><option>Bali</option><option>Thailand</option><option>Singapore</option>
+      </select>
+    </div>
+    <div class="search-field">
+      <label>Tour Type</label>
+      <select>
+        <option>All Types</option>
+        <option>Domestic</option><option>International</option>
+        <option>Honeymoon</option><option>Group Tour</option>
+      </select>
+    </div>
+    <div class="search-field">
+      <label>Duration</label>
+      <select>
+        <option>Any Duration</option>
+        <option>1–3 Days</option><option>4–6 Days</option><option>7–10 Days</option><option>10+ Days</option>
+      </select>
+    </div>
+    <div class="search-field">
+      <label>Departure Month</label>
+      <select>
+        <option>Any Month</option>
+        <option>January</option><option>February</option><option>March</option><option>April</option>
+        <option>May</option><option>June</option><option>July</option><option>August</option>
+        <option>September</option><option>October</option><option>November</option><option>December</option>
+      </select>
+    </div>
+    <a href="tours.html" class="btn-primary" style="white-space:nowrap;padding:14px 32px">Search Tours →</a>
+  </div>
+</div>
+
+<!-- STATS -->
+<div class="stats-section">
+  <div class="stat-item reveal">
+    <div class="stat-num"><span data-count="1200">0</span><sup>+</sup></div>
+    <div class="stat-label">Happy Travellers</div>
+  </div>
+  <div class="stat-item reveal" style="transition-delay:0.1s">
+    <div class="stat-num"><span data-count="80">0</span><sup>+</sup></div>
+    <div class="stat-label">Tour Packages</div>
+  </div>
+  <div class="stat-item reveal" style="transition-delay:0.2s">
+    <div class="stat-num"><span data-count="25">0</span><sup>+</sup></div>
+    <div class="stat-label">Countries Covered</div>
+  </div>
+  <div class="stat-item reveal" style="transition-delay:0.3s">
+    <div class="stat-num"><span data-count="8">0</span><sup>+</sup></div>
+    <div class="stat-label">Years of Excellence</div>
+  </div>
+</div>
+
+<!-- ABOUT STRIP -->
+<section style="padding:100px 64px; background:var(--off-white);">
+  <div class="about-strip">
+    <div class="about-img-wrap reveal-left">
+      <img class="about-main-img" src="https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=800&q=80" alt="Travel Experience"/>
+      <img class="about-accent-img" src="https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=600&q=80" alt="Destination"/>
+      <div class="about-badge"><strong>8+</strong><span>Years of Trust</span></div>
+    </div>
+    <div class="reveal-right">
+      <div class="section-eyebrow">✦ About Urban Holidays</div>
+      <h2 class="section-title">We Plan Your<br>Perfect <em>Dream Vacation</em></h2>
+      <p class="section-sub">Based in Ballari, Karnataka, Urban Holidays has been crafting extraordinary journeys for over 8 years. From the peaks of Himachal to the beaches of Bali — we handle everything so you can simply enjoy.</p>
+      <div class="about-features">
+        <div class="about-feature">Custom Itineraries</div>
+        <div class="about-feature">Best Price Guarantee</div>
+        <div class="about-feature">24/7 Travel Support</div>
+        <div class="about-feature">Expert Local Guides</div>
+        <div class="about-feature">Visa Assistance</div>
+        <div class="about-feature">Group Discounts</div>
+      </div>
+      <br><a href="about.html" class="btn-primary" style="margin-top:8px">Our Story →</a>
+    </div>
+  </div>
+</section>
+
+<!-- PACKAGES -->
+<section class="packages-section">
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;margin-bottom:16px;">
+    <div>
+      <div class="section-eyebrow reveal">✦ Our Tours</div>
+      <h2 class="section-title reveal">Handpicked <em>Destinations</em></h2>
+    </div>
+    <a href="tours.html" class="btn-outline-dark reveal">View All Tours →</a>
+  </div>
+  <div class="tab-row reveal">
+    <button class="tab-btn active" onclick="switchTab(this,'domestic')">🇮🇳 Domestic</button>
+    <button class="tab-btn" onclick="switchTab(this,'international')">✈️ International</button>
+    <button class="tab-btn" onclick="switchTab(this,'honeymoon')">💑 Honeymoon</button>
+  </div>
+
+  <!-- Domestic Grid -->
+  <div class="tour-grid" data-type="domestic">
+    <div class="package-card reveal">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80" alt="Goa"/>
+        <span class="card-badge">Bestseller</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span>🕐 5 Days</span><span>🏨 3-Star Hotel</span></div>
+        <div class="card-title">Goa Beach Escape</div>
+        <p class="card-desc">Sun, sand & seafood — explore the golden beaches, vibrant nightlife, and Portuguese heritage of India's party capital.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span class="from">Starting from</span><strong>₹9,999</strong><span>/person</span></div>
+        <a href="tour-detail.html?id=goa" class="card-link">View Details</a>
+      </div>
+    </div>
+    <div class="package-card reveal" style="transition-delay:0.1s">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1588416936097-41850ab3d86d?w=600&q=80" alt="Kerala"/>
+        <span class="card-badge">Top Pick</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span>🕐 6 Days</span><span>🏨 4-Star Hotel</span></div>
+        <div class="card-title">Kerala Backwaters & Hills</div>
+        <p class="card-desc">Drift through serene backwaters on a houseboat, and explore misty hill stations of Munnar and Wayanad.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span class="from">Starting from</span><strong>₹12,499</strong><span>/person</span></div>
+        <a href="tour-detail.html?id=kerala" class="card-link">View Details</a>
+      </div>
+    </div>
+    <div class="package-card reveal" style="transition-delay:0.2s">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1609766856923-7cf9b9c5d0a4?w=600&q=80" alt="Manali"/>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span>🕐 7 Days</span><span>🏨 3-Star Hotel</span></div>
+        <div class="card-title">Manali Himalayan Adventure</div>
+        <p class="card-desc">Snow-capped peaks, ancient monasteries, and adrenaline activities in the heart of the Himalayas.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span class="from">Starting from</span><strong>₹14,999</strong><span>/person</span></div>
+        <a href="tour-detail.html?id=manali" class="card-link">View Details</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- International Grid -->
+  <div class="tour-grid" data-type="international" style="display:none">
+    <div class="package-card reveal">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80" alt="Dubai"/>
+        <span class="card-badge">Popular</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span>🕐 5 Days</span><span>🏨 5-Star Hotel</span></div>
+        <div class="card-title">Dubai Luxury Getaway</div>
+        <p class="card-desc">Burj Khalifa, desert safaris, luxury malls — the perfect blend of opulence and adventure.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span class="from">Starting from</span><strong>₹45,999</strong><span>/person</span></div>
+        <a href="tour-detail.html?id=dubai" class="card-link">View Details</a>
+      </div>
+    </div>
+    <div class="package-card reveal" style="transition-delay:0.1s">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Bali"/>
+        <span class="card-badge">Bestseller</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span>🕐 6 Days</span><span>🏨 4-Star Hotel</span></div>
+        <div class="card-title">Bali Island Paradise</div>
+        <p class="card-desc">Terraced rice fields, ancient temples, surf beaches, and vibrant nightlife on the Island of Gods.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span class="from">Starting from</span><strong>₹38,999</strong><span>/person</span></div>
+        <a href="tour-detail.html?id=bali" class="card-link">View Details</a>
+      </div>
+    </div>
+    <div class="package-card reveal" style="transition-delay:0.2s">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80" alt="Thailand"/>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span>🕐 7 Days</span><span>🏨 4-Star Hotel</span></div>
+        <div class="card-title">Thailand Explorer</div>
+        <p class="card-desc">Bangkok's temples, Chiang Mai's culture, and Phuket's stunning beaches in one epic trip.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span class="from">Starting from</span><strong>₹34,999</strong><span>/person</span></div>
+        <a href="tour-detail.html?id=thailand" class="card-link">View Details</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Honeymoon Grid -->
+  <div class="tour-grid" data-type="honeymoon" style="display:none">
+    <div class="package-card reveal">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=600&q=80" alt="Maldives"/>
+        <span class="card-badge">Luxury</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span>🕐 6 Days</span><span>🏨 5-Star Resort</span></div>
+        <div class="card-title">Maldives Romantic Escape</div>
+        <p class="card-desc">Overwater bungalows, crystal-clear lagoons, and pristine white sand beaches for the perfect honeymoon.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span class="from">Starting from</span><strong>₹89,999</strong><span>/couple</span></div>
+        <a href="tour-detail.html?id=maldives" class="card-link">View Details</a>
+      </div>
+    </div>
+    <div class="package-card reveal" style="transition-delay:0.1s">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80" alt="Switzerland"/>
+        <span class="card-badge">Dream Honeymoon</span>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span>🕐 8 Days</span><span>🏨 5-Star Hotel</span></div>
+        <div class="card-title">Switzerland Fairytale</div>
+        <p class="card-desc">Snow-capped Alps, pristine lakes, and charming Swiss villages — straight out of a romantic film.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span class="from">Starting from</span><strong>₹1,20,000</strong><span>/couple</span></div>
+        <a href="tour-detail.html?id=switzerland" class="card-link">View Details</a>
+      </div>
+    </div>
+    <div class="package-card reveal" style="transition-delay:0.2s">
+      <div class="card-img">
+        <img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&q=80" alt="Kashmir"/>
+      </div>
+      <div class="card-body">
+        <div class="card-meta"><span>🕐 5 Days</span><span>🏨 Houseboat Stay</span></div>
+        <div class="card-title">Kashmir — Heaven on Earth</div>
+        <p class="card-desc">Dal Lake shikara rides, Mughal gardens, and snow-dusted mountains make Kashmir pure magic.</p>
+      </div>
+      <div class="card-footer">
+        <div class="card-price"><span class="from">Starting from</span><strong>₹22,999</strong><span>/couple</span></div>
+        <a href="tour-detail.html?id=kashmir" class="card-link">View Details</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section class="features-section">
+  <div class="section-eyebrow reveal" style="color:var(--gold)">✦ Why Choose Us</div>
+  <h2 class="section-title reveal">Why Travel With<br><em>Urban Holidays?</em></h2>
+  <p class="section-sub reveal">We are dedicated to providing you with a seamless and unforgettable travel experience from start to finish.</p>
+  <div class="features-grid">
+    <div class="feature-item reveal"><div class="feature-icon">💎</div><div class="feature-title">Best Price Guarantee</div><div class="feature-desc">Transparent pricing with zero hidden charges. We match any genuine lower price.</div></div>
+    <div class="feature-item reveal" style="transition-delay:0.1s"><div class="feature-icon">🕐</div><div class="feature-title">24/7 Support</div><div class="feature-desc">Our travel experts are available round the clock throughout your journey.</div></div>
+    <div class="feature-item reveal" style="transition-delay:0.2s"><div class="feature-icon">🗺️</div><div class="feature-title">Handpicked Itineraries</div><div class="feature-desc">Carefully curated routes to the world's most breathtaking destinations.</div></div>
+    <div class="feature-item reveal" style="transition-delay:0.3s"><div class="feature-icon">⚙️</div><div class="feature-title">Customizable Tours</div><div class="feature-desc">Tailor every detail of your trip to match your personal travel style.</div></div>
+    <div class="feature-item reveal" style="transition-delay:0.4s"><div class="feature-icon">🧭</div><div class="feature-title">Expert Local Guides</div><div class="feature-desc">Experienced guides who bring local culture and hidden gems to life.</div></div>
+    <div class="feature-item reveal" style="transition-delay:0.5s"><div class="feature-icon">📋</div><div class="feature-title">Visa Assistance</div><div class="feature-desc">Hassle-free visa processing and documentation support for all destinations.</div></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section style="background:var(--cream);">
+  <div class="section-eyebrow reveal">✦ Testimonials</div>
+  <h2 class="section-title reveal">What Our <em>Travellers Say</em></h2>
+  <div class="testi-grid">
+    <div class="testi-card reveal">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Amazing Kerala backwaters tour! The houseboat experience was absolutely unforgettable. Urban Holidays made every detail perfect. Highly recommended!"</p>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&q=80" alt="Arjun"/>
+        <div><div class="testi-name">Arjun Mehra</div><div class="testi-role">Travel Enthusiast</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal" style="transition-delay:0.1s">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Our Dubai trip was perfectly planned — from flights to hotels, everything was smooth. The team is truly professional and went above and beyond."</p>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&q=80" alt="Divya"/>
+        <div><div class="testi-name">Divya Sharma</div><div class="testi-role">Business Owner</div></div>
+      </div>
+    </div>
+    <div class="testi-card reveal" style="transition-delay:0.2s">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Excellent value! Our Goa vacation was fantastic from start to finish. The itinerary was well-crafted and the support team was always reachable."</p>
+      <div class="testi-author">
+        <img class="testi-avatar" src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&q=80" alt="Ravi"/>
+        <div><div class="testi-name">Ravi Kulkarni</div><div class="testi-role">IT Consultant</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTAGRAM -->
+<section class="insta-section">
+  <div class="section-eyebrow" style="margin:0 auto 20px;display:table">✦ Follow Our Journey</div>
+  <h2 class="section-title reveal" style="text-align:center">Find Us on <em>Instagram</em></h2>
+  <p style="font-size:15px;color:var(--text-2);margin:12px auto 0;max-width:400px;text-align:center">
+    Follow <strong>@urban_holidays_ballari</strong> for travel inspiration & special offers
+  </p>
+  <a href="https://www.instagram.com/urban_holidays_ballari/" target="_blank" class="insta-btn reveal">
+    📷 &nbsp;@urban_holidays_ballari
+  </a>
+  <div class="insta-grid reveal">
+    <div class="insta-cell"><img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=400&q=70" alt="insta"/></div>
+    <div class="insta-cell"><img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400&q=70" alt="insta"/></div>
+    <div class="insta-cell"><img src="https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=400&q=70" alt="insta"/></div>
+    <div class="insta-cell"><img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=400&q=70" alt="insta"/></div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-eyebrow reveal" style="margin:0 auto 20px;display:table;border-color:rgba(201,168,76,0.4)">✦ Ready to Travel?</div>
+  <h2 class="section-title reveal" style="text-align:center">Start Your Dream <em>Journey Today</em></h2>
+  <p class="section-sub reveal" style="text-align:center;color:rgba(255,255,255,0.7);margin:0 auto 36px">
+    Let our experts design the perfect trip for you. Free consultation, no obligations.
+  </p>
+  <div class="cta-btns reveal">
+    <a href="contact.html" class="btn-primary">Plan My Trip →</a>
+    <a href="tel:+91XXXXXXXXXX" class="btn-outline">📞 Call Us Now</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer"><!-- injected by components.js --></footer>
+
+<!-- WHATSAPP -->
+<a href="https://wa.me/91XXXXXXXXXX?text=Hello%20Urban%20Holidays%2C%20I%20want%20to%20enquire%20about%20a%20tour." target="_blank" class="whatsapp-float" title="Chat on WhatsApp">💬</a>
+
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+  injectNav(false);
+  injectFooter();
+</script>
+</body>
+</html>

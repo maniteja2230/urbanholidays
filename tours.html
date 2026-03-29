@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tours & Packages | Urban Holidays — Ballari</title>
+  <meta name="description" content="Browse all domestic & international tour packages by Urban Holidays. Goa, Kerala, Manali, Dubai, Bali and more."/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .filter-bar {
+      background:var(--white); padding:24px 64px;
+      display:flex; align-items:center; gap:16px; flex-wrap:wrap;
+      border-bottom:1px solid var(--border); position:sticky; top:66px; z-index:100;
+      box-shadow:0 4px 20px rgba(0,0,0,0.04);
+    }
+    .filter-bar label { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-3); }
+    .filter-bar select {
+      padding:9px 14px; border:1px solid rgba(0,0,0,0.12); background:var(--off-white);
+      font-family:'DM Sans',sans-serif; font-size:13px; outline:none;
+      cursor:pointer; transition:border-color 0.2s;
+    }
+    .filter-bar select:focus { border-color:var(--gold); }
+    .filter-divider { width:1px; height:28px; background:var(--border); margin:0 8px; }
+    .result-count { margin-left:auto; font-size:12px; color:var(--text-3); letter-spacing:1px; }
+    .category-tabs {
+      display:flex; gap:0; border-bottom:2px solid var(--border);
+      margin-bottom:48px; overflow-x:auto;
+    }
+    .cat-tab {
+      padding:14px 28px; font-size:12px; font-weight:600; letter-spacing:1.5px;
+      text-transform:uppercase; cursor:pointer; border:none; background:transparent;
+      color:var(--text-3); border-bottom:2px solid transparent; margin-bottom:-2px;
+      white-space:nowrap; transition:all 0.25s;
+    }
+    .cat-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+    .cat-tab:hover { color:var(--navy); }
+    .tours-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:28px; }
+    .tour-section { margin-bottom:64px; }
+    .no-results { text-align:center; padding:80px 20px; color:var(--text-3); }
+    .no-results .icon { font-size:48px; display:block; margin-bottom:16px; }
+    @media(max-width:1024px) { .tours-grid { grid-template-columns:1fr 1fr; } .filter-bar { padding:16px 32px; } }
+    @media(max-width:768px) { .tours-grid { grid-template-columns:1fr; } .filter-bar { padding:12px 20px; } }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar"></nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <div class="page-hero-bg" style="background-image:url('https://images.unsplash.com/photo-1488085061387-422e29b40080?w=1600&q=70')"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-eyebrow">✦ Explore the World</div>
+    <h1>Our <em>Tours</em> & Packages</h1>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Tours</span></div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <label>Filter:</label>
+  <select id="budgetFilter" onchange="filterTours()">
+    <option value="">All Budgets</option>
+    <option value="budget">Budget (Under ₹15,000)</option>
+    <option value="mid">Mid Range (₹15k–₹50k)</option>
+    <option value="luxury">Luxury (₹50k+)</option>
+  </select>
+  <select id="durationFilter" onchange="filterTours()">
+    <option value="">Any Duration</option>
+    <option value="short">1–3 Days</option>
+    <option value="medium">4–6 Days</option>
+    <option value="long">7+ Days</option>
+  </select>
+  <select id="typeFilter" onchange="filterTours()">
+    <option value="">All Types</option>
+    <option value="domestic">Domestic</option>
+    <option value="international">International</option>
+    <option value="honeymoon">Honeymoon</option>
+    <option value="group">Group Tours</option>
+  </select>
+  <div class="filter-divider"></div>
+  <span class="result-count" id="resultCount">Showing all packages</span>
+</div>
+
+<!-- TOURS SECTION -->
+<section>
+  <!-- CATEGORY TABS -->
+  <div class="category-tabs">
+    <button class="cat-tab active" onclick="setCategory(this,'all')">🌍 All Tours</button>
+    <button class="cat-tab" onclick="setCategory(this,'domestic')">🇮🇳 Domestic</button>
+    <button class="cat-tab" onclick="setCategory(this,'international')">✈️ International</button>
+    <button class="cat-tab" onclick="setCategory(this,'honeymoon')">💑 Honeymoon</button>
+    <button class="cat-tab" onclick="setCategory(this,'group')">👨‍👩‍👧‍👦 Group Tours</button>
+  </div>
+
+  <div id="toursContainer">
+    <!-- DOMESTIC -->
+    <div class="tour-section" data-category="domestic">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
+        <div>
+          <div class="section-eyebrow" style="margin-bottom:8px">🇮🇳 Domestic Tours</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);font-weight:700">Explore <em style="color:var(--gold);font-style:italic">Incredible India</em></h3>
+        </div>
+      </div>
+      <div class="tours-grid">
+        <div class="package-card reveal" data-budget="budget" data-duration="medium" data-price="9999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1587474260584-136574528ed5?w=600&q=80" alt="Goa"/><span class="card-badge">Bestseller</span></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 5 Days</span><span>🏨 3★ Hotel</span></div>
+            <div class="card-title">Goa Beach Escape</div>
+            <p class="card-desc">Sun, sand & seafood — explore golden beaches, vibrant nightlife, and Portuguese heritage.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹9,999</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=goa" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.1s" data-budget="mid" data-duration="medium" data-price="12499">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1588416936097-41850ab3d86d?w=600&q=80" alt="Kerala"/><span class="card-badge">Top Pick</span></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 6 Days</span><span>🏨 4★ Hotel</span></div>
+            <div class="card-title">Kerala Backwaters & Hills</div>
+            <p class="card-desc">Houseboat stay in backwaters, misty Munnar hills, and the serene beauty of God's Own Country.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹12,499</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=kerala" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.2s" data-budget="mid" data-duration="long" data-price="14999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1609766856923-7cf9b9c5d0a4?w=600&q=80" alt="Manali"/></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 7 Days</span><span>🏨 3★ Hotel</span></div>
+            <div class="card-title">Manali Himalayan Adventure</div>
+            <p class="card-desc">Snow-capped peaks, Rohtang Pass, Solang Valley, and Himalayan culture all in one epic trip.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹14,999</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=manali" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" data-budget="budget" data-duration="medium" data-price="11999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1524230657132-9d40fc8b3015?w=600&q=80" alt="Rajasthan"/></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 6 Days</span><span>🏨 Heritage Hotel</span></div>
+            <div class="card-title">Royal Rajasthan Heritage</div>
+            <p class="card-desc">Majestic forts, golden deserts, camel safaris, and royal palaces of Jaipur, Jodhpur & Jaisalmer.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹11,999</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=rajasthan" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.1s" data-budget="mid" data-duration="long" data-price="19999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1524168272322-bf73616d9cb5?w=600&q=80" alt="Leh Ladakh"/><span class="card-badge">Adventure</span></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 8 Days</span><span>🏨 Camps & Hotels</span></div>
+            <div class="card-title">Leh Ladakh Expedition</div>
+            <p class="card-desc">Pangong Tso lake, Nubra Valley, magnetic hill, and the highest motorable roads in the world.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹19,999</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=ladakh" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.2s" data-budget="budget" data-duration="medium" data-price="8499">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&q=80" alt="Ooty"/></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 4 Days</span><span>🏨 3★ Hotel</span></div>
+            <div class="card-title">Ooty & Kodaikanal Hills</div>
+            <p class="card-desc">Toy train rides, tea gardens, Doddabetta peak, and refreshing hill station getaway.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹8,499</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=ooty" class="card-link">Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INTERNATIONAL -->
+    <div class="tour-section" data-category="international">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:32px;">
+        <div>
+          <div class="section-eyebrow" style="margin-bottom:8px">✈️ International Tours</div>
+          <h3 style="font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);font-weight:700">Discover the <em style="color:var(--gold);font-style:italic">World</em></h3>
+        </div>
+      </div>
+      <div class="tours-grid">
+        <div class="package-card reveal" data-budget="luxury" data-duration="medium" data-price="45999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=600&q=80" alt="Dubai"/><span class="card-badge">Popular</span></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 5 Days</span><span>🏨 5★ Hotel</span></div>
+            <div class="card-title">Dubai Luxury Getaway</div>
+            <p class="card-desc">Burj Khalifa, desert safaris, luxury malls, and stunning skyline in the city of gold.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹45,999</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=dubai" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.1s" data-budget="mid" data-duration="medium" data-price="38999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=600&q=80" alt="Bali"/><span class="card-badge">Bestseller</span></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 6 Days</span><span>🏨 4★ Resort</span></div>
+            <div class="card-title">Bali Island Paradise</div>
+            <p class="card-desc">Terraced rice fields, ancient temples, surf beaches, and vibrant nightlife in the Island of Gods.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹38,999</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=bali" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.2s" data-budget="mid" data-duration="long" data-price="34999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1508009603885-50cf7c579365?w=600&q=80" alt="Thailand"/></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 7 Days</span><span>🏨 4★ Hotel</span></div>
+            <div class="card-title">Thailand Explorer</div>
+            <p class="card-desc">Bangkok's temples, Chiang Mai culture, and Phuket's stunning beaches — one epic adventure.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹34,999</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=thailand" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" data-budget="mid" data-duration="medium" data-price="32999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1525625293386-3f8f99389edd?w=600&q=80" alt="Singapore"/></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 5 Days</span><span>🏨 4★ Hotel</span></div>
+            <div class="card-title">Singapore City Experience</div>
+            <p class="card-desc">Gardens by the Bay, Sentosa Island, Universal Studios, and world-class food in the Lion City.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹32,999</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=singapore" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.1s" data-budget="luxury" data-duration="long" data-price="89999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=600&q=80" alt="Maldives"/><span class="card-badge">Luxury</span></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 6 Days</span><span>🏨 5★ Water Villa</span></div>
+            <div class="card-title">Maldives Island Retreat</div>
+            <p class="card-desc">Overwater bungalows, turquoise lagoons, coral reefs, and barefoot luxury at its finest.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹89,999</strong><span>/couple</span></div>
+            <a href="tour-detail.html?id=maldives" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.2s" data-budget="mid" data-duration="medium" data-price="28999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1528360983277-13d401cdc186?w=600&q=80" alt="Vietnam"/></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 6 Days</span><span>🏨 4★ Hotel</span></div>
+            <div class="card-title">Vietnam Treasures</div>
+            <p class="card-desc">Halong Bay, Hoi An lantern streets, imperial Hue, and the vibrant street food culture.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹28,999</strong><span>/person</span></div>
+            <a href="tour-detail.html?id=vietnam" class="card-link">Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HONEYMOON -->
+    <div class="tour-section" data-category="honeymoon">
+      <div style="margin-bottom:32px">
+        <div class="section-eyebrow" style="margin-bottom:8px">💑 Honeymoon Packages</div>
+        <h3 style="font-family:'Playfair Display',serif;font-size:28px;color:var(--navy);font-weight:700">Romance <em style="color:var(--gold);font-style:italic">Awaits</em></h3>
+      </div>
+      <div class="tours-grid">
+        <div class="package-card reveal" data-budget="luxury" data-duration="medium" data-price="89999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1591604466107-ec97de577aff?w=600&q=80" alt="Maldives"/><span class="card-badge">Most Romantic</span></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 6 Days</span><span>🏨 5★ Resort</span></div>
+            <div class="card-title">Maldives Romantic Escape</div>
+            <p class="card-desc">Overwater bungalows, candlelit dinners by the ocean, sunset cruises for the perfect honeymoon.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹89,999</strong><span>/couple</span></div>
+            <a href="tour-detail.html?id=maldives" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.1s" data-budget="luxury" data-duration="long" data-price="120000">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=600&q=80" alt="Switzerland"/><span class="card-badge">Dream Honeymoon</span></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 8 Days</span><span>🏨 5★ Hotel</span></div>
+            <div class="card-title">Switzerland Fairytale</div>
+            <p class="card-desc">Snow-capped Alps, pristine lakes, and charming Swiss villages straight out of a romantic film.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹1,20,000</strong><span>/couple</span></div>
+            <a href="tour-detail.html?id=switzerland" class="card-link">Details</a>
+          </div>
+        </div>
+        <div class="package-card reveal" style="transition-delay:0.2s" data-budget="mid" data-duration="medium" data-price="22999">
+          <div class="card-img"><img src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=600&q=80" alt="Kashmir"/></div>
+          <div class="card-body">
+            <div class="card-meta"><span>🕐 5 Days</span><span>🏨 Houseboat</span></div>
+            <div class="card-title">Kashmir — Heaven on Earth</div>
+            <p class="card-desc">Dal Lake shikara rides, Mughal gardens, and snow-dusted mountains — India's own paradise.</p>
+          </div>
+          <div class="card-footer">
+            <div class="card-price"><span class="from">From</span><strong>₹22,999</strong><span>/couple</span></div>
+            <a href="tour-detail.html?id=kashmir" class="card-link">Details</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer"></footer>
+<a href="https://wa.me/91XXXXXXXXXX" target="_blank" class="whatsapp-float">💬</a>
+
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+  injectNav(true);
+  injectFooter();
+
+  // Read URL param for pre-selected type
+  const urlParams = new URLSearchParams(location.search);
+  const defaultType = urlParams.get('type') || 'all';
+
+  function setCategory(btn, cat) {
+    document.querySelectorAll('.cat-tab').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tour-section').forEach(s => {
+      s.style.display = cat==='all' || s.dataset.category===cat ? '' : 'none';
+    });
+    updateCount();
+  }
+
+  function filterTours() {
+    const budget = document.getElementById('budgetFilter').value;
+    const dur    = document.getElementById('durationFilter').value;
+    const type   = document.getElementById('typeFilter').value;
+    const cards  = document.querySelectorAll('.package-card');
+    let shown = 0;
+    cards.forEach(c => {
+      const matchB = !budget || c.dataset.budget===budget;
+      const matchD = !dur || c.dataset.duration===dur;
+      let matchT = true;
+      if (type) {
+        const section = c.closest('.tour-section');
+        matchT = section && section.dataset.category===type;
+      }
+      const show = matchB && matchD && matchT;
+      c.style.display = show ? '' : 'none';
+      if(show) shown++;
+    });
+    document.getElementById('resultCount').textContent = `Showing ${shown} package${shown!==1?'s':''}`;
+  }
+
+  function updateCount() {
+    const shown = [...document.querySelectorAll('.package-card')].filter(c=>c.style.display!=='none').length;
+    document.getElementById('resultCount').textContent = `Showing ${shown} packages`;
+  }
+
+  // Init category from URL
+  if (defaultType !== 'all') {
+    const tab = [...document.querySelectorAll('.cat-tab')].find(t => t.textContent.toLowerCase().includes(defaultType));
+    if (tab) setCategory(tab, defaultType);
+  }
+</script>
+</body>
+</html>

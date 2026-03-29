@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tour Details | Urban Holidays</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .detail-layout { display:grid; grid-template-columns:1fr 380px; gap:48px; align-items:start; }
+    .gallery-main { width:100%; height:480px; object-fit:cover; margin-bottom:8px; }
+    .gallery-thumbs { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; }
+    .thumb { height:100px; object-fit:cover; cursor:pointer; opacity:0.65; transition:opacity 0.2s; }
+    .thumb.active, .thumb:hover { opacity:1; outline:2px solid var(--gold); }
+    .detail-meta-row {
+      display:flex; flex-wrap:wrap; gap:16px; margin:28px 0;
+      padding:20px; background:var(--cream); border-left:3px solid var(--gold);
+    }
+    .meta-chip {
+      display:flex; align-items:center; gap:6px;
+      font-size:12px; font-weight:600; letter-spacing:1px; text-transform:uppercase;
+      color:var(--text-2);
+    }
+    .meta-chip .ico { font-size:16px; }
+    .tab-nav { display:flex; gap:0; border-bottom:2px solid var(--border); margin-bottom:28px; }
+    .detail-tab {
+      padding:12px 24px; font-size:12px; font-weight:600; letter-spacing:1.5px;
+      text-transform:uppercase; cursor:pointer; border:none; background:transparent;
+      color:var(--text-3); border-bottom:2px solid transparent; margin-bottom:-2px; transition:all 0.2s;
+    }
+    .detail-tab.active { color:var(--gold); border-bottom-color:var(--gold); }
+    .tab-pane { display:none; }
+    .tab-pane.active { display:block; }
+    .itinerary-day {
+      border:1px solid var(--border); margin-bottom:12px; overflow:hidden;
+    }
+    .day-header {
+      display:flex; align-items:center; gap:16px; padding:16px 20px;
+      background:var(--cream); cursor:pointer; transition:background 0.2s;
+    }
+    .day-header:hover { background:var(--gold-pale); }
+    .day-num {
+      width:36px; height:36px; background:var(--gold); border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:12px; font-weight:700; color:var(--navy); flex-shrink:0;
+    }
+    .day-title { font-weight:600; font-size:15px; color:var(--navy); flex:1; }
+    .day-chevron { font-size:12px; color:var(--text-3); transition:transform 0.3s; }
+    .day-body { padding:16px 20px; font-size:14px; color:var(--text-2); line-height:1.7; display:none; }
+    .itinerary-day.open .day-chevron { transform:rotate(180deg); }
+    .itinerary-day.open .day-body { display:block; }
+    .incl-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .incl-item, .excl-item {
+      display:flex; align-items:flex-start; gap:8px;
+      font-size:13px; color:var(--text-2); padding:6px 0;
+    }
+    .incl-item::before { content:'✓'; color:#22c55e; font-weight:700; flex-shrink:0; }
+    .excl-item::before { content:'✗'; color:#ef4444; font-weight:700; flex-shrink:0; }
+    /* BOOKING CARD */
+    .booking-card {
+      background:var(--white); padding:28px;
+      border:1px solid var(--border); position:sticky; top:80px;
+      box-shadow:var(--shadow);
+    }
+    .price-display { text-align:center; padding:20px; background:var(--navy); margin:-28px -28px 24px; }
+    .price-from { font-size:10px; letter-spacing:3px; text-transform:uppercase; color:rgba(255,255,255,0.5); }
+    .price-big { font-family:'Playfair Display',serif; font-size:40px; font-weight:900; color:var(--gold); }
+    .price-per { font-size:12px; color:rgba(255,255,255,0.4); }
+    .booking-card .form-group { margin-bottom:14px; }
+    .booking-card .form-group label { font-size:9px; }
+    .booking-card .form-group input,
+    .booking-card .form-group select { padding:10px 14px; font-size:13px; }
+    .book-btn { width:100%; padding:16px; background:var(--gold); color:var(--navy); font-size:12px; font-weight:700; letter-spacing:2px; text-transform:uppercase; border:none; cursor:pointer; transition:all 0.3s; margin-top:8px; }
+    .book-btn:hover { background:var(--gold-light); }
+    .wha-btn { width:100%; padding:14px; background:#25D366; color:white; font-size:12px; font-weight:600; letter-spacing:1px; border:none; cursor:pointer; transition:all 0.3s; margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px; }
+    .wha-btn:hover { background:#1ebe5d; }
+    .trust-row { display:flex; gap:16px; margin-top:16px; padding-top:16px; border-top:1px solid var(--border); }
+    .trust-item { flex:1; text-align:center; font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text-3); }
+    .trust-item .t-icon { font-size:20px; display:block; margin-bottom:4px; }
+    @media(max-width:1024px) {
+      .detail-layout { grid-template-columns:1fr; }
+      .booking-card { position:static; }
+    }
+    @media(max-width:768px) {
+      .gallery-main { height:280px; }
+      .gallery-thumbs { grid-template-columns:repeat(4,1fr); }
+      .thumb { height:64px; }
+      .incl-grid { grid-template-columns:1fr; }
+    }
+  </style>
+</head>
+<body>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav id="navbar"></nav>
+
+<!-- PAGE HERO -->
+<div class="page-hero" style="height:36vh;min-height:260px">
+  <div class="page-hero-bg" id="heroImg" style="background-image:url('https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1600&q=70')"></div>
+  <div class="page-hero-content">
+    <div class="page-hero-eyebrow" id="tourBadge">✦ Domestic Tour</div>
+    <h1 id="tourHeroTitle">Tour <em>Details</em></h1>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><a href="tours.html">Tours</a><span>/</span><span id="tourBreadcrumb">Tour</span></div>
+  </div>
+</div>
+
+<section>
+  <div class="detail-layout">
+    <!-- LEFT CONTENT -->
+    <div>
+      <!-- GALLERY -->
+      <img class="gallery-main" id="mainImg" src="" alt="Tour"/>
+      <div class="gallery-thumbs" id="thumbGrid"></div>
+
+      <!-- META -->
+      <div class="detail-meta-row" id="metaRow"></div>
+
+      <!-- TABS -->
+      <div class="tab-nav">
+        <button class="detail-tab active" onclick="switchDetailTab(this,'overview')">Overview</button>
+        <button class="detail-tab" onclick="switchDetailTab(this,'itinerary')">Itinerary</button>
+        <button class="detail-tab" onclick="switchDetailTab(this,'includes')">Includes</button>
+        <button class="detail-tab" onclick="switchDetailTab(this,'policy')">Policy</button>
+      </div>
+
+      <div class="tab-pane active" id="overview">
+        <h3 id="overviewTitle" style="font-family:'Playfair Display',serif;font-size:24px;color:var(--navy);margin-bottom:16px"></h3>
+        <p id="overviewDesc" style="font-size:15px;color:var(--text-2);line-height:1.8;margin-bottom:20px"></p>
+        <p id="overviewDesc2" style="font-size:15px;color:var(--text-2);line-height:1.8"></p>
+      </div>
+      <div class="tab-pane" id="itinerary">
+        <div id="itineraryList"></div>
+      </div>
+      <div class="tab-pane" id="includes">
+        <h4 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin-bottom:16px">What's Included</h4>
+        <div class="incl-grid" id="inclList"></div>
+        <h4 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin:28px 0 16px">What's Excluded</h4>
+        <div id="exclList"></div>
+      </div>
+      <div class="tab-pane" id="policy">
+        <h4 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin-bottom:12px">Cancellation Policy</h4>
+        <ul style="list-style:none;padding:0">
+          <li style="padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-2)">✅ 30+ days before: Full refund</li>
+          <li style="padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-2)">⚠️ 15–29 days before: 50% refund</li>
+          <li style="padding:10px 0;border-bottom:1px solid var(--border);font-size:14px;color:var(--text-2)">❌ 0–14 days before: No refund</li>
+        </ul>
+        <h4 style="font-family:'Playfair Display',serif;font-size:18px;color:var(--navy);margin:28px 0 12px">Important Notes</h4>
+        <ul style="padding-left:20px;font-size:14px;color:var(--text-2);line-height:1.9">
+          <li>Prices are per person on twin sharing basis unless mentioned.</li>
+          <li>Valid government ID is mandatory for all travellers.</li>
+          <li>Tour itinerary may change due to weather or operational reasons.</li>
+          <li>Travel insurance is strongly recommended.</li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- RIGHT: BOOKING CARD -->
+    <div class="reveal-right">
+      <div class="booking-card">
+        <div class="price-display">
+          <div class="price-from">Starting from</div>
+          <div class="price-big" id="cardPrice">₹0</div>
+          <div class="price-per">/person (twin sharing)</div>
+        </div>
+        <form onsubmit="submitBooking(event)">
+          <div class="form-group">
+            <label>Your Name</label>
+            <input type="text" name="name" placeholder="Full Name" required/>
+          </div>
+          <div class="form-group">
+            <label>Phone Number</label>
+            <input type="tel" name="phone" placeholder="+91 XXXXX XXXXX" required/>
+          </div>
+          <div class="form-group">
+            <label>Travel Date</label>
+            <input type="date" name="date" required/>
+          </div>
+          <div class="form-group">
+            <label>No. of Travellers</label>
+            <select name="pax">
+              <option>1 Person</option><option>2 People</option>
+              <option>3–5 People</option><option>6–10 People</option><option>10+ People</option>
+            </select>
+          </div>
+          <button type="submit" class="book-btn">📅 Send Enquiry →</button>
+        </form>
+        <a id="whatsappLink" href="#" target="_blank" class="wha-btn">💬 WhatsApp Us</a>
+        <div class="trust-row">
+          <div class="trust-item"><span class="t-icon">🔒</span>Secure</div>
+          <div class="trust-item"><span class="t-icon">💰</span>Best Price</div>
+          <div class="trust-item"><span class="t-icon">📞</span>24/7 Support</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer"></footer>
+<a href="https://wa.me/91XXXXXXXXXX" target="_blank" class="whatsapp-float">💬</a>
+
+<script src="js/components.js"></script>
+<script src="js/main.js"></script>
+<script>
+injectNav(true);
+injectFooter();
+
+/* ── TOUR DATA ── */
+const tours = {
+  goa: {
+    title:'Goa Beach Escape', badge:'🇮🇳 Domestic Tour',
+    price:'₹9,999', wPrice:'9999',
+    heroImg:'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1600&q=70',
+    images:[
+      'https://images.unsplash.com/photo-1587474260584-136574528ed5?w=800&q=80',
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+      'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&q=80',
+      'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
+    ],
+    meta:[{i:'🕐',l:'Duration',v:'5 Days / 4 Nights'},{i:'🏨',l:'Hotels',v:'3-Star Hotel'},{i:'✈️',l:'Travel',v:'Flight Included'},{i:'👥',l:'Group Size',v:'Min. 2 People'}],
+    desc:'Goa is India\'s smallest state yet bursts with colour, culture and coastline. Our Goa Beach Escape takes you through the most stunning beaches, from the lively Calangute to the serene Palolem.',
+    desc2:'Enjoy Portuguese-influenced cuisine, explore ancient churches, and unwind at sunset beach bars. This package includes comfortable 3-star hotel stay, airport transfers, and guided sightseeing.',
+    itinerary:[
+      {d:1,t:'Arrival in Goa',txt:'Pick-up from Goa Airport/Station. Check-in to hotel. Evening at Calangute or Baga Beach. Dinner at a beach shack.'},
+      {d:2,t:'North Goa Sightseeing',txt:'Fort Aguada, Candolim Beach, Basilica of Bom Jesus, Se Cathedral, Anjuna Beach, and Vagator viewpoint.'},
+      {d:3,t:'South Goa & Dudhsagar',txt:'Dudhsagar Waterfalls (seasonal), Colva Beach, Miramar Beach, and Panjim city walk.'},
+      {d:4,t:'Leisure & Watersports',txt:'Free morning for shopping at Anjuna Flea Market (if Saturday/Wednesday). Afternoon watersports — parasailing, banana boat, jet ski.'},
+      {d:5,t:'Departure',txt:'Breakfast at hotel. Check-out and transfer to airport/station. End of journey with golden memories.'},
+    ],
+    includes:['4 nights hotel accommodation','Daily breakfast','Airport/station transfers','AC vehicle for sightseeing','Professional tour guide','All toll & parking charges'],
+    excludes:['Flights (quoted separately)','Personal expenses','Lunch and dinner','Entry fees for attractions','Travel insurance'],
+  },
+  kerala: {
+    title:'Kerala Backwaters & Hills', badge:'🇮🇳 Domestic Tour',
+    price:'₹12,499', wPrice:'12499',
+    heroImg:'https://images.unsplash.com/photo-1588416936097-41850ab3d86d?w=1600&q=70',
+    images:[
+      'https://images.unsplash.com/photo-1588416936097-41850ab3d86d?w=800&q=80',
+      'https://images.unsplash.com/photo-1552733407-5d5c46c3bb3b?w=800&q=80',
+      'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
+      'https://images.unsplash.com/photo-1506197603052-3cc9c3a201bd?w=800&q=80',
+    ],
+    meta:[{i:'🕐',l:'Duration',v:'6 Days / 5 Nights'},{i:'🏨',l:'Hotels',v:'4-Star + Houseboat'},{i:'✈️',l:'Travel',v:'Flight Included'},{i:'👥',l:'Group Size',v:'Min. 2 People'}],
+    desc:'God\'s Own Country lives up to its name — Kerala is a masterpiece of nature. Glide through the iconic backwaters on a traditional kettuvallam houseboat, explore misty Munnar tea estates, and breathe in the pure mountain air of Wayanad.',
+    desc2:'From Ayurvedic wellness to Kathakali performances, this tour is a true cultural immersion in one of India\'s most beautiful states.',
+    itinerary:[
+      {d:1,t:'Arrival in Cochin',txt:'Arrive at Cochin Airport. Check-in to hotel. Evening heritage walk in Fort Kochi — Chinese fishing nets, Dutch Palace, Jewish Synagogue.'},
+      {d:2,t:'Cochin to Munnar',txt:'Drive to Munnar (4 hrs). En route stop at Cheeyappara & Valara Waterfalls. Check-in. Evening walk through Munnar town.'},
+      {d:3,t:'Munnar Sightseeing',txt:'Eravikulam National Park, Mattupetty Dam, Echo Point, Tea Museum, and Top Station for panoramic views.'},
+      {d:4,t:'Munnar to Alleppey',txt:'Drive to Alleppey (4.5 hrs). Board private houseboat at noon. Sail through palm-fringed backwaters, overnight on houseboat.'},
+      {d:5,t:'Alleppey to Kovalam',txt:'Check out houseboat after breakfast. Drive to Kovalam. Beach evening at Lighthouse Beach and Hawa Beach.'},
+      {d:6,t:'Kovalam & Departure',txt:'Morning Ayurvedic massage (optional). Transfer to Trivandrum Airport for departure.'},
+    ],
+    includes:['5 nights accommodation (hotel + houseboat)','Daily breakfast + all meals on houseboat','Airport transfers','AC vehicle throughout','Professional guide','Houseboat full day charter'],
+    excludes:['Flights','Personal expenses','Ayurvedic treatments','Entry fees','Travel insurance'],
+  },
+  dubai: {
+    title:'Dubai Luxury Getaway', badge:'✈️ International Tour',
+    price:'₹45,999', wPrice:'45999',
+    heroImg:'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=1600&q=70',
+    images:[
+      'https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80',
+      'https://images.unsplash.com/photo-1518684079-3c830dcef090?w=800&q=80',
+      'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80',
+      'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80',
+    ],
+    meta:[{i:'🕐',l:'Duration',v:'5 Days / 4 Nights'},{i:'🏨',l:'Hotels',v:'5-Star Hotel'},{i:'✈️',l:'Travel',v:'Return Flights Included'},{i:'🛂',l:'Visa',v:'Assistance Provided'}],
+    desc:'Dubai is where the future meets the desert. From the world\'s tallest building to a desert safari under the stars, our Dubai Luxury Getaway packs in the very best of this magnificent city.',
+    desc2:'Stay at a premium 5-star hotel, experience a traditional dhow cruise dinner on Dubai Creek, and shop at the world\'s largest mall — all with our expert guidance.',
+    itinerary:[
+      {d:1,t:'Arrival in Dubai',txt:'Arrival at Dubai International Airport. Transfer to 5-star hotel. Evening at leisure. Welcome dinner at hotel.'},
+      {d:2,t:'Dubai City Tour',txt:'Burj Khalifa (At the Top), Dubai Mall & Fountain show, Gold Souk, Spice Souk, Deira Old Dubai. Dhow Creek dinner cruise.'},
+      {d:3,t:'Desert Safari',txt:'Morning at leisure for shopping or hotel pool. Afternoon desert safari — dune bashing, camel ride, belly dance dinner under the stars.'},
+      {d:4,t:'Palm Jumeirah & Atlantis',txt:'Palm Jumeirah Monorail, Atlantis The Palm visit, JBR Beach, Dubai Marina walk, and Marina Dinner.'},
+      {d:5,t:'Shopping & Departure',txt:'Morning free for last-minute shopping at Dubai Mall or Global Village (seasonal). Transfer to airport.'},
+    ],
+    includes:['Return flights from Bangalore','4 nights 5-star hotel','Daily breakfast','All transfers by private AC car','Dubai City Tour & Desert Safari','Dhow Cruise dinner','Visa fees & assistance'],
+    excludes:['Personal shopping expenses','Lunch & dinners (except mentioned)','Aquaventure waterpark entry','Optional activities','Travel insurance (recommended)'],
+  },
+  bali: {
+    title:'Bali Island Paradise', badge:'✈️ International Tour',
+    price:'₹38,999', wPrice:'38999',
+    heroImg:'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=1600&q=70',
+    images:[
+      'https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80',
+      'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=800&q=80',
+      'https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=800&q=80',
+      'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800&q=80',
+    ],
+    meta:[{i:'🕐',l:'Duration',v:'6 Days / 5 Nights'},{i:'🏨',l:'Hotels',v:'4-Star Resort'},{i:'✈️',l:'Travel',v:'Return Flights Included'},{i:'🛂',l:'Visa',v:'Visa on Arrival'}],
+    desc:'Bali — the Island of Gods — captivates with emerald rice terraces, ancient Hindu temples, surf beaches, and one of the world\'s most vibrant art scenes. Our 6-day Bali package balances culture, adventure, and relaxation perfectly.',
+    desc2:'Stay in a beautiful 4-star resort in Seminyak or Ubud, watch the legendary Kecak fire dance at Uluwatu, and indulge in a traditional Balinese massage.',
+    itinerary:[
+      {d:1,t:'Arrival in Bali',txt:'Arrive at Ngurah Rai Airport, Denpasar. Transfer to resort in Seminyak. Evening at Seminyak beach for legendary Bali sunset.'},
+      {d:2,t:'Ubud Cultural Tour',txt:'Tegallalang Rice Terraces, Tirta Empul temple, Ubud Monkey Forest, Ubud Palace & Art Market. Traditional Balinese dinner.'},
+      {d:3,t:'Water Temple & Volcano',txt:'Pura Ulun Danu on Lake Bratan, Sekumpul Waterfall or Gitgit Waterfall, and Tanah Lot Temple at sunset.'},
+      {d:4,t:'Uluwatu & Beaches',txt:'Uluwatu Temple cliff walk, Kecak dance performance at sunset, Jimbaran seafood dinner on the beach.'},
+      {d:5,t:'Water Sports & Spa',txt:'Morning water sports at Tanjung Benoa — snorkelling, banana boat, parasailing. Afternoon Balinese massage. Evening free at Seminyak.'},
+      {d:6,t:'Departure',txt:'Morning free. Check-out. Transfer to Denpasar airport for return flight.'},
+    ],
+    includes:['Return flights','5 nights 4-star resort','Daily breakfast','All AC transfers','Ubud & Uluwatu day tours','Kecak dance entry','Visa on Arrival fees'],
+    excludes:['Personal expenses','Lunch & dinners (except mentioned)','Optional water sports extras','Travel insurance'],
+  },
+};
+
+// Load from URL
+const params = new URLSearchParams(location.search);
+const id = params.get('id') || 'goa';
+const tour = tours[id] || tours.goa;
+
+document.title = tour.title + ' | Urban Holidays';
+document.getElementById('tourHeroTitle').innerHTML = tour.title.replace(/ /, ' <em>').replace(/(?<=<em>.{5,30}) /, '</em> ');
+document.getElementById('tourBadge').textContent = tour.badge;
+document.getElementById('tourBreadcrumb').textContent = tour.title;
+document.getElementById('heroImg').style.backgroundImage = `url('${tour.heroImg}')`;
+document.getElementById('cardPrice').textContent = tour.price;
+
+// Gallery
+const mainImg = document.getElementById('mainImg');
+mainImg.src = tour.images[0];
+mainImg.alt = tour.title;
+const thumbGrid = document.getElementById('thumbGrid');
+tour.images.forEach((src,i) => {
+  const img = document.createElement('img');
+  img.className = 'thumb' + (i===0?' active':'');
+  img.src = src; img.alt = 'Gallery ' + (i+1);
+  img.onclick = () => {
+    mainImg.src = src;
+    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    img.classList.add('active');
+  };
+  thumbGrid.appendChild(img);
+});
+
+// Meta
+const metaRow = document.getElementById('metaRow');
+tour.meta.forEach(m => {
+  const div = document.createElement('div');
+  div.className = 'meta-chip';
+  div.innerHTML = `<span class="ico">${m.i}</span><span><strong>${m.l}:</strong> ${m.v}</span>`;
+  metaRow.appendChild(div);
+});
+
+// Overview
+document.getElementById('overviewTitle').textContent = 'About This Tour';
+document.getElementById('overviewDesc').textContent = tour.desc;
+document.getElementById('overviewDesc2').textContent = tour.desc2;
+
+// Itinerary
+const itList = document.getElementById('itineraryList');
+tour.itinerary.forEach(it => {
+  const div = document.createElement('div');
+  div.className = 'itinerary-day';
+  div.innerHTML = `<div class="day-header" onclick="this.parentElement.classList.toggle('open')">
+    <div class="day-num">${it.d}</div>
+    <div class="day-title">Day ${it.d}: ${it.t}</div>
+    <span class="day-chevron">▼</span>
+  </div>
+  <div class="day-body">${it.txt}</div>`;
+  itList.appendChild(div);
+});
+
+// Includes
+const inclList = document.getElementById('inclList');
+tour.includes.forEach(t => { inclList.innerHTML += `<div class="incl-item">${t}</div>`; });
+const exclList = document.getElementById('exclList');
+tour.excludes.forEach(t => { exclList.innerHTML += `<div class="excl-item">${t}</div>`; });
+
+// WhatsApp
+document.getElementById('whatsappLink').href =
+  `https://wa.me/91XXXXXXXXXX?text=Hi%2C%20I%27m%20interested%20in%20the%20${encodeURIComponent(tour.title)}%20package%20(${encodeURIComponent(tour.price)})`;
+
+function switchDetailTab(btn, id) {
+  document.querySelectorAll('.detail-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+
+async function submitBooking(e) {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.textContent = 'Sending…'; btn.disabled=true;
+  const data = {
+    tour: tour.title,
+    name: e.target.name.value,
+    phone: e.target.phone.value,
+    date: e.target.date.value,
+    pax: e.target.pax.value,
+  };
+  try {
+    await fetch('/api/enquiry',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  } catch {}
+  window.showToast('✓ Enquiry sent! Our team will call you shortly.');
+  e.target.reset();
+  btn.textContent='📅 Send Enquiry →'; btn.disabled=false;
+}
+</script>
+</body>
+</html>
